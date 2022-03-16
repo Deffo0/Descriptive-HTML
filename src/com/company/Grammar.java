@@ -9,57 +9,91 @@ public class Grammar implements GrammarConstants {
 
 /** Root production. */
   static final public void Input() throws ParseException {Token elem;
+ String elemStr;
     elem = jj_consume_token(create);
-if(elem.toString().contains("IMAGE")){
+elemStr = elem.toString();
+    System.out.println("$$$$" + elemStr);
+    if(elemStr.contains("IMAGE")){
          String src;
-         String result;
-        src = elem.toString().split("SOURCE ")[1].split("\n")[0];
-        System.out.println(src);
-        result = "<img src=" + src + "/>";
+         String result = ">>> ";
+        src = elemStr.split("SOURCE ")[1];
+        result += "<img src=" + src + "/>";
         System.out.println(result);
     }
-    else if(elem.toString().contains("HEADING")){
-            String text = null, color = null, font = null, result;
-                if(elem.toString().contains("AND WITH")){
-                    String[] arr = elem.toString().split(" AND WITH ");
+    else if(elemStr.contains("HEADING")){
+            String text = null, color = null, font = null, result = "<h1";
+            boolean flag = false;
+                if(elemStr.contains(" AND ")){
+                    String[] arr = elemStr.split(" AND ");
                     for(var substring : arr){
                         if(substring.contains("TEXT"))
                             text = arr[0].split(" TEXT ")[1];
-                        else if(substring.contains("COLOR"))
+                        else if(substring.contains("COLOR")){
                             color = arr[0].split(" COLOR ")[1];
-                        else if(substring.contains("FONT"))
+                            flag = true;
+                        }
+                        else if(substring.contains("FONT")){
                             font = arr[0].split(" FONT ")[1];
+                           flag = true;
+                        }
+                    }
+                }else{
+                    if(elemStr.contains("TEXT"))
+                        text = elemStr.split(" TEXT ")[1];
+                    else if(elem.toString().contains("COLOR")){
+                        color = elemStr.split(" COLOR ")[1];
+                        flag = true;
+                    }
+                    else if(elemStr.contains("FONT")){
+                        font = elemStr.split(" FONT ")[1];
+                        flag = true;
                     }
                 }
-                result = "<h1 style=\"";
+                if(flag)
+                    result += " style=\"";
                 if(color != null)
                     result+= "color:"+color+";";
                 if(font != null)
                     result+="font-family:"+font+";\"";
-                if(text != null)
-                    result+= ">"+text+"<\\h1>";
+                if(text != null){
+                    if(flag)
+                        result += "\"";
+                    result+= ">"+text.replaceAll("\"", "");
+                    result += "</h1>";
+                }
                 System.out.println(result);
-        }
+    }
     else if(elem.toString().contains("PARAGRAPH")){
-        String text = null, color = null, font = null, result;
-            if(elem.toString().contains("AND WITH")){
-                String[] arr = elem.toString().split(" AND WITH ");
-                for(var substring : arr){
-                    if(substring.contains("TEXT"))
-                        text = arr[0].split(" TEXT ")[1];
-                    else if(substring.contains("COLOR"))
-                        color = arr[0].split(" COLOR ")[1];
-                    else if(substring.contains("FONT"))
-                        font = arr[0].split(" FONT ")[1];
+        String text = null, color = null, font = null, result = "<p";
+        boolean flag = false;
+        if(elemStr.contains(" AND ")){
+            System.out.println("#########################3");
+            String[] arr = elemStr.split(" AND ");
+            for(var substring : arr){
+                if(substring.contains("TEXT"))
+                    text = arr[0].split(" TEXT ")[1];
+                else if(substring.contains("COLOR")){
+                    color = arr[0].split(" COLOR ")[1];
+                    flag = true;
+                }
+                else if(substring.contains("FONT")){
+                    font = arr[0].split(" FONT ")[1];
+                   flag = true;
                 }
             }
-            result = "<p style=\"";
+        }
+            if(flag)
+                result += " style=\"";
             if(color != null)
                 result+= "color:"+color+";";
             if(font != null)
                 result+="font-family:"+font+";\"";
-            if(text != null)
-                result+= ">"+text+"<\\p>";
+            if(text != null){
+                if(flag)
+                    result += "\"";
+                result+= ">"+text.replaceAll("\"", "");
+                result += "</p>";
+            }
             System.out.println(result);
     }
     else if(elem.toString().contains("LINK")){
