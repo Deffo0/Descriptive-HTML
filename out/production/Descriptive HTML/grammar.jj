@@ -1,0 +1,40 @@
+PARSER_BEGIN(Grammar)
+
+
+public class Grammar {
+
+  public static void main(String args[]) throws ParseException {
+    Grammar parser = new Grammar(System.in);
+    parser.Input();
+  }
+
+}
+
+PARSER_END(Grammar)
+
+
+
+TOKEN :
+{
+<create: "ADD"(<skip> (<element> (<skip> )))>
+| <#element: <img> | <header> | <para> | <url> >
+| <#img: "IMAGE"(<skip> ("WITH" (<skip> ("SOURCE" (<quote> (<sentence> (<quote>(<skip> ))))))))>
+| <#header: "HEADING"(<decorated_text>(<skip> ))>
+| <#para: "PARAGRAPH"(<decorated_text>(<skip> ))>
+| <#url: "LINK"(<decorated_text>(<skip> ))>
+| <#decorated_text: ( <text> | <color> |<font> )(<skip> ("AND" (<skip> ( <text> | <color> |<font> ))))* >
+| <#text: "WITH"(<skip> ("TEXT" (<skip> (<quote> (<sentence> (<quote>))))))>
+| <#color: "WITH"(<skip> ("COLOR" (<skip> (<quote> (<sentence> (<quote>))))))>
+| <#font: "WITH"(<skip> ("FONT" (<skip> (<quote> (<sentence> (<quote>))))))>
+| <#quote:  "'" >
+| <#alphanumeric: ([ "0"-"9" , "a"-"z" , "A"-"Z" , "/" , ":" , "." ]) >
+| <#sentence:  (<alphanumeric> | " ")+ >
+| <#skip: " "|"t"|"r"|"n">
+}
+/** Root production. */
+void Input() :
+{}
+{
+  (<create> )+ <EOF>
+}
+

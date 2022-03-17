@@ -14,22 +14,22 @@ PARSER_END(Grammar)
 
 
 TOKEN : {<#skip: " "|"\t"|"\r"|"\n">}
-TOKEN : {<element: <img> | <header> | <para> | <url> >}
+TOKEN : {<#element: <img> | <header> | <para> | <url> >}
 TOKEN : {<create:"ADD"<skip><element>>}
-TOKEN : {<img: "IMAGE"<skip>"WITH"<skip>"SOURCE"<skip><quote><sentence> <quote><skip>>}
+TOKEN : {<#img: "IMAGE"<skip>"WITH"<skip>"SOURCE"<skip><quote><sentence> <quote><skip>>}
 TOKEN : {<#header: "HEADING"<skip><decorated_text><skip>>}
 TOKEN : {<#para: "PARAGRAPH"<skip><decorated_text><skip>>}
 TOKEN : {<#url: "LINK"<skip><decorated_url><skip>>}
-TOKEN : {<#decorated_url:  (<text> | <link>) " AND "((<text> | <link>)) (" AND " <color>)?>}
+TOKEN : {<#decorated_url:  (<text> | <link> |<color>) (" AND "(<text> | <link> | <color>))? (" AND "(<text> | <link> | <color>))?>}
 TOKEN : {<#decorated_text:  (<text> | <color> | <font>) (" AND" <skip> (<text> | <color> | <font>)  )?(" AND" <skip> (<text> | <color> | <font>) )? >}
 TOKEN : {<#text: "WITH"<skip> "TEXT" <skip> <quote> <sentence> <quote>>}
 TOKEN : {<#color: "WITH"<skip> "COLOR" <skip> <quote> <sentence> <quote>>}
 TOKEN : {<#font: "WITH"<skip> "FONT" <skip> <quote> <sentence> <quote>>}
 TOKEN : {<#link: "WITH"<skip> "LINK" <skip> <quote> <URL> <quote>>}
 TOKEN : {<#URL: ("http"|"https")"://"<sentence> > }
-TOKEN: {<#quote:  "\"" >}
-TOKEN: {<#alphanumeric: ([ "0"-"9" , "a"-"z" , "A"-"Z" , "/" , ":" , "." , "_"]) >}
-TOKEN: {<#sentence:  (<alphanumeric> | " ")+ >}
+TOKEN : {<#quote:  "\"" >}
+TOKEN : {<#alphanumeric: ([ "0"-"9" , "a"-"z" , "A"-"Z" , "/" , ":" , "." , "_"]) >}
+TOKEN : {<#sentence:  (<alphanumeric> | " ")+ >}
 
 /** Root production. */
 void Input():
@@ -43,7 +43,7 @@ void Input():
     elemStr = elem.toString().split("\n")[0];
     if(elemStr.contains("IMAGE")){
          String src;
-         String result = ">>> ";
+         String result = "";
         src = elemStr.split("SOURCE ")[1];
         result += "<img src=" + src + "/>";
         System.out.println(result);
@@ -138,7 +138,7 @@ void Input():
                     }
                 }
             }
-            result += " =\"" + link.replaceAll("\"", "") + "\"";
+            result += "=\"" + link.replaceAll("\"", "") + "\"";
             if(color != null)
                 result += "style=\"color:" + color.replaceAll("\"", "") + "\">";
             else
