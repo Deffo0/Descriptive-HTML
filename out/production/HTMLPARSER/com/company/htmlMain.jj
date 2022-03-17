@@ -20,12 +20,13 @@ TOKEN : {<img: "IMAGE"<skip>"WITH"<skip>"SOURCE"<skip><quote><sentence> <quote><
 TOKEN : {<#header: "HEADING"<skip><decorated_text><skip>>}
 TOKEN : {<#para: "PARAGRAPH"<skip><decorated_text><skip>>}
 TOKEN : {<#url: "LINK"<skip><decorated_url><skip>>}
-TOKEN : {<#decorated_url:  <text> | <link>   (<skip> "AND" <skip> <text> | <link>  ) >}
-TOKEN : {<#decorated_text:  <text> | <color> | <font> <skip> ("AND" <skip> (<text> | <color> | <font>) )* >}
+TOKEN : {<#decorated_url:  (<text> | <link>) " AND "((<text> | <link>)) (" AND " <color>)?>}
+TOKEN : {<#decorated_text:  (<text> | <color> | <font>) (" AND" <skip> (<text> | <color> | <font>)  )?(" AND" <skip> (<text> | <color> | <font>) )? >}
 TOKEN : {<#text: "WITH"<skip> "TEXT" <skip> <quote> <sentence> <quote>>}
 TOKEN : {<#color: "WITH"<skip> "COLOR" <skip> <quote> <sentence> <quote>>}
 TOKEN : {<#font: "WITH"<skip> "FONT" <skip> <quote> <sentence> <quote>>}
-TOKEN : {<#link: "WITH"<skip> "LINK" <skip> "http"|"https""://" <skip> <quote> <sentence> <quote>>}
+TOKEN : {<#link: "WITH"<skip> "LINK" <skip> <quote> <URL> <quote>>}
+TOKEN : {<#URL: ("http"|"https")"://"<sentence> > }
 TOKEN: {<#quote:  "\"" >}
 TOKEN: {<#alphanumeric: ([ "0"-"9" , "a"-"z" , "A"-"Z" , "/" , ":" , "." , "_"]) >}
 TOKEN: {<#sentence:  (<alphanumeric> | " ")+ >}
@@ -37,9 +38,11 @@ void Input():
  String elemStr;
 }
 {
-elem = <create>
+(elem = <create>
 {
-    elemStr = elem.toString();
+    elemStr = elem.toString().split("\n")[0];
+    /*if(elemStr.contains("\n"))
+        System.out.println("Yes bro I contain \\n");*/
     System.out.println("$$$$" + elemStr);
     if(elemStr.contains("IMAGE")){
          String src;
@@ -55,13 +58,13 @@ elem = <create>
                     String[] arr = elemStr.split(" AND ");
                     for(var substring : arr){
                         if(substring.contains("TEXT"))
-                            text = arr[0].split(" TEXT ")[1];
+                            text = substring.split(" TEXT ")[1];
                         else if(substring.contains("COLOR")){
-                            color = arr[0].split(" COLOR ")[1];
+                            color = substring.split(" COLOR ")[1];
                             flag = true;
                         }
                         else if(substring.contains("FONT")){
-                            font = arr[0].split(" FONT ")[1];
+                            font = substring.split(" FONT ")[1];
                            flag = true;
                         }
                     }
@@ -80,9 +83,9 @@ elem = <create>
                 if(flag)
                     result += " style=\"";
                 if(color != null)
-                    result+= "color:"+color+";";
+                    result+= "color:"+color.replaceAll("\"", "")+";";
                 if(font != null)
-                    result+="font-family:"+font+";\"";
+                    result+="font-family:"+font.replaceAll("\"", "")+";";
                 if(text != null){
                     if(flag)
                         result += "\"";
@@ -95,17 +98,17 @@ elem = <create>
         String text = null, color = null, font = null, result = "<p";
         boolean flag = false;
         if(elemStr.contains(" AND ")){
-            System.out.println("#########################3");
             String[] arr = elemStr.split(" AND ");
             for(var substring : arr){
+                System.out.println(substring);
                 if(substring.contains("TEXT"))
-                    text = arr[0].split(" TEXT ")[1];
+                    text = substring.split(" TEXT ")[1];
                 else if(substring.contains("COLOR")){
-                    color = arr[0].split(" COLOR ")[1];
+                    color = substring.split(" COLOR ")[1];
                     flag = true;
                 }
                 else if(substring.contains("FONT")){
-                    font = arr[0].split(" FONT ")[1];
+                    font = substring.split(" FONT ")[1];
                    flag = true;
                 }
             }
@@ -113,9 +116,9 @@ elem = <create>
             if(flag)
                 result += " style=\"";
             if(color != null)
-                result+= "color:"+color+";";
+                result+= "color:"+color.replaceAll("\"", "")+";";
             if(font != null)
-                result+="font-family:"+font+";\"";
+                result+="font-family:"+font.replaceAll("\"", "")+";";
             if(text != null){
                 if(flag)
                     result += "\"";
@@ -125,25 +128,31 @@ elem = <create>
             System.out.println(result);
     }
     else if(elem.toString().contains("LINK")){
-            String text = null, link = null, result;
-                if(elem.toString().contains("AND WITH")){
-                    String[] arr = elem.toString().split(" AND WITH ");
-                    for(var substring : arr){
-                        if(substring.contains("TEXT"))
-                            text = arr[0].split(" TEXT ")[1];
-                        else if(substring.contains("LINK"))
-                            link = arr[0].split(" LINK ")[1];
+            String text = null, link = null, color = null, result = "<a href";
+            if(elemStr.contains(" AND ")){
+                String[] arr = elemStr.split(" AND ");
+                for(var substring : arr){
+                    System.out.println(substring);
+                    if(substring.contains("TEXT"))
+                        text = substring.split(" TEXT ")[1];
+                    else if(substring.contains("LINK")){
+                        link = substring.split(" LINK ")[1];
+                    }
+                    else if(substring.contains("COLOR")){
+                        color = substring.split(" COLOR ")[1];
                     }
                 }
-                result = "<a href=\"";
-                if(link != null)
-                    result+= link + ">";
-                if(text != null)
-                    result+= text + "<//a>";
-                System.out.println(result);
+            }
+            result += " =\"" + link.replaceAll("\"", "") + "\"";
+            if(color != null)
+                result += "style=\"color:" + color.replaceAll("\"", "") + "\">";
+            else
+                result += ">";
+            if(text != null)
+                result += text.replaceAll("\"", "") + "</a>";
+            System.out.println(result);
     }
-
-
-}
+})+
+<EOF>
 
 }

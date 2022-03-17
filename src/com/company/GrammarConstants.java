@@ -35,11 +35,13 @@ public interface GrammarConstants {
   /** RegularExpression Id. */
   int link = 13;
   /** RegularExpression Id. */
-  int quote = 14;
+  int URL = 14;
   /** RegularExpression Id. */
-  int alphanumeric = 15;
+  int quote = 15;
   /** RegularExpression Id. */
-  int sentence = 16;
+  int alphanumeric = 16;
+  /** RegularExpression Id. */
+  int sentence = 17;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -60,6 +62,7 @@ public interface GrammarConstants {
     "<color>",
     "<font>",
     "<link>",
+    "<URL>",
     "\"\\\"\"",
     "<alphanumeric>",
     "<sentence>",

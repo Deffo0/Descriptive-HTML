@@ -10,8 +10,12 @@ public class Grammar implements GrammarConstants {
 /** Root production. */
   static final public void Input() throws ParseException {Token elem;
  String elemStr;
-    elem = jj_consume_token(create);
-elemStr = elem.toString();
+    label_1:
+    while (true) {
+      elem = jj_consume_token(create);
+elemStr = elem.toString().split("\n")[0];
+    /*if(elemStr.contains("\n"))
+        System.out.println("Yes bro I contain \\n");*/
     System.out.println("$$$$" + elemStr);
     if(elemStr.contains("IMAGE")){
          String src;
@@ -27,13 +31,13 @@ elemStr = elem.toString();
                     String[] arr = elemStr.split(" AND ");
                     for(var substring : arr){
                         if(substring.contains("TEXT"))
-                            text = arr[0].split(" TEXT ")[1];
+                            text = substring.split(" TEXT ")[1];
                         else if(substring.contains("COLOR")){
-                            color = arr[0].split(" COLOR ")[1];
+                            color = substring.split(" COLOR ")[1];
                             flag = true;
                         }
                         else if(substring.contains("FONT")){
-                            font = arr[0].split(" FONT ")[1];
+                            font = substring.split(" FONT ")[1];
                            flag = true;
                         }
                     }
@@ -52,9 +56,9 @@ elemStr = elem.toString();
                 if(flag)
                     result += " style=\"";
                 if(color != null)
-                    result+= "color:"+color+";";
+                    result+= "color:"+color.replaceAll("\"", "")+";";
                 if(font != null)
-                    result+="font-family:"+font+";\"";
+                    result+="font-family:"+font.replaceAll("\"", "")+";";
                 if(text != null){
                     if(flag)
                         result += "\"";
@@ -67,17 +71,17 @@ elemStr = elem.toString();
         String text = null, color = null, font = null, result = "<p";
         boolean flag = false;
         if(elemStr.contains(" AND ")){
-            System.out.println("#########################3");
             String[] arr = elemStr.split(" AND ");
             for(var substring : arr){
+                System.out.println(substring);
                 if(substring.contains("TEXT"))
-                    text = arr[0].split(" TEXT ")[1];
+                    text = substring.split(" TEXT ")[1];
                 else if(substring.contains("COLOR")){
-                    color = arr[0].split(" COLOR ")[1];
+                    color = substring.split(" COLOR ")[1];
                     flag = true;
                 }
                 else if(substring.contains("FONT")){
-                    font = arr[0].split(" FONT ")[1];
+                    font = substring.split(" FONT ")[1];
                    flag = true;
                 }
             }
@@ -85,9 +89,9 @@ elemStr = elem.toString();
             if(flag)
                 result += " style=\"";
             if(color != null)
-                result+= "color:"+color+";";
+                result+= "color:"+color.replaceAll("\"", "")+";";
             if(font != null)
-                result+="font-family:"+font+";\"";
+                result+="font-family:"+font.replaceAll("\"", "")+";";
             if(text != null){
                 if(flag)
                     result += "\"";
@@ -97,23 +101,41 @@ elemStr = elem.toString();
             System.out.println(result);
     }
     else if(elem.toString().contains("LINK")){
-            String text = null, link = null, result;
-                if(elem.toString().contains("AND WITH")){
-                    String[] arr = elem.toString().split(" AND WITH ");
-                    for(var substring : arr){
-                        if(substring.contains("TEXT"))
-                            text = arr[0].split(" TEXT ")[1];
-                        else if(substring.contains("LINK"))
-                            link = arr[0].split(" LINK ")[1];
+            String text = null, link = null, color = null, result = "<a href";
+            if(elemStr.contains(" AND ")){
+                String[] arr = elemStr.split(" AND ");
+                for(var substring : arr){
+                    System.out.println(substring);
+                    if(substring.contains("TEXT"))
+                        text = substring.split(" TEXT ")[1];
+                    else if(substring.contains("LINK")){
+                        link = substring.split(" LINK ")[1];
+                    }
+                    else if(substring.contains("COLOR")){
+                        color = substring.split(" COLOR ")[1];
                     }
                 }
-                result = "<a href=\"";
-                if(link != null)
-                    result+= link + ">";
-                if(text != null)
-                    result+= text + "<//a>";
-                System.out.println(result);
+            }
+            result += " =\"" + link.replaceAll("\"", "") + "\"";
+            if(color != null)
+                result += "style=\"color:" + color.replaceAll("\"", "") + "\">";
+            else
+                result += ">";
+            if(text != null)
+                result += text.replaceAll("\"", "") + "</a>";
+            System.out.println(result);
     }
+      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+      case create:{
+        ;
+        break;
+        }
+      default:
+        jj_la1[0] = jj_gen;
+        break label_1;
+      }
+    }
+    jj_consume_token(0);
 }
 
   static private boolean jj_initialized_once = false;
@@ -126,13 +148,13 @@ elemStr = elem.toString();
   static public Token jj_nt;
   static private int jj_ntk;
   static private int jj_gen;
-  static final private int[] jj_la1 = new int[0];
+  static final private int[] jj_la1 = new int[1];
   static private int[] jj_la1_0;
   static {
 	   jj_la1_init_0();
 	}
 	private static void jj_la1_init_0() {
-	   jj_la1_0 = new int[] {};
+	   jj_la1_0 = new int[] {0x8,};
 	}
 
   /** Constructor with InputStream. */
@@ -153,6 +175,7 @@ elemStr = elem.toString();
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
+	 for (int i = 0; i < 1; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -166,7 +189,7 @@ elemStr = elem.toString();
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 0; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 1; i++) jj_la1[i] = -1;
   }
 
   /** Constructor. */
@@ -183,6 +206,7 @@ elemStr = elem.toString();
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
+	 for (int i = 0; i < 1; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -200,6 +224,7 @@ elemStr = elem.toString();
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
+	 for (int i = 0; i < 1; i++) jj_la1[i] = -1;
   }
 
   /** Constructor with generated Token Manager. */
@@ -215,6 +240,7 @@ elemStr = elem.toString();
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
+	 for (int i = 0; i < 1; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -223,6 +249,7 @@ elemStr = elem.toString();
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
+	 for (int i = 0; i < 1; i++) jj_la1[i] = -1;
   }
 
   static private Token jj_consume_token(int kind) throws ParseException {
@@ -273,12 +300,12 @@ elemStr = elem.toString();
   /** Generate ParseException. */
   static public ParseException generateParseException() {
 	 jj_expentries.clear();
-	 boolean[] la1tokens = new boolean[17];
+	 boolean[] la1tokens = new boolean[18];
 	 if (jj_kind >= 0) {
 	   la1tokens[jj_kind] = true;
 	   jj_kind = -1;
 	 }
-	 for (int i = 0; i < 0; i++) {
+	 for (int i = 0; i < 1; i++) {
 	   if (jj_la1[i] == jj_gen) {
 		 for (int j = 0; j < 32; j++) {
 		   if ((jj_la1_0[i] & (1<<j)) != 0) {
@@ -287,7 +314,7 @@ elemStr = elem.toString();
 		 }
 	   }
 	 }
-	 for (int i = 0; i < 17; i++) {
+	 for (int i = 0; i < 18; i++) {
 	   if (la1tokens[i]) {
 		 jj_expentry = new int[1];
 		 jj_expentry[0] = i;
