@@ -13,7 +13,7 @@ public class Grammar {
 PARSER_END(Grammar)
 
 
-TOKEN : {<#skip: " "|"\t"|"\r"|"\n">}
+TOKEN : {<#skip: (" "|"\t"|"\r")+ | "\n" >}
 TOKEN : {<#element: <img> | <header> | <para> | <url> >}
 TOKEN : {<create:"ADD"<skip><element>>}
 TOKEN : {<#img: "IMAGE"<skip>"WITH"<skip>"SOURCE"<skip><quote><sentence> <quote><skip>>}
