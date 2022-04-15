@@ -1,3 +1,8 @@
+options
+{
+  LOOKAHEAD = 6;
+  FORCE_LA_CHECK = true;
+}
 PARSER_BEGIN(Grammar)
 
 
